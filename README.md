@@ -5,6 +5,17 @@
 
 ---
 
+## 🎬 專案成果展示與交付檔案 (Deliverables)
+
+| 交付項目 | 檔案連結 | 說明 |
+| :--- | :--- | :--- |
+| 🎬 **操作流程示範影片** | [20261102-tdee-calculator-demo.mp4](docs/20261102-tdee-calculator-demo.mp4) | **1080p Full HD MP4 (8.8 MB)**，可在 GitHub 線上直接播放或下載 |
+| 📄 **專題完整報告書** | [20261030-project-report-bilingual.pdf](docs/20261030-project-report-bilingual.pdf) | A4 中英雙語對照 PDF，含痛點分析、公式研究、AI 協作與附錄截圖 |
+| 🖥️ **專題分享投影片** | [20261030-presentation-slides-bilingual.pdf](docs/20261030-presentation-slides-bilingual.pdf) | 16:9 中英雙語橫向投影片 (共 7 頁)，專為成果分享設計 |
+| 📝 **影片分鏡說明文件** | [20261102-demo-video-guide.md](docs/20261102-demo-video-guide.md) | 詳細記錄影片各秒數時間軸、操作重點與規格參數 |
+
+---
+
 ## ✨ 功能特色
 
 - 🧮 **科學精確計算**：
