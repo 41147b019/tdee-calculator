@@ -13,9 +13,11 @@
   <img src="docs/20261102-demo-walkthrough.gif" alt="BMR & TDEE Calculator Live Demo" width="100%" style="border-radius:10px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);">
 </p>
 
-> 📺 **如何觀看 1080p Full HD 高畫質示範影片？**  
-> 1. **在 GitHub 上直接在線播放**：點擊 👉 [**進入 GitHub 內建影片播放器 (docs/20261102-tdee-calculator-demo.mp4)**](https://github.com/41147b019/tdee-calculator/blob/main/docs/20261102-tdee-calculator-demo.mp4)，進入頁面後直接點擊中央的 ▶️ 播放鍵即可串流觀賞！  
-> 2. **直接下載檔案至電腦播放**：點擊 👉 [**下載 1080p MP4 原始檔 (8.8 MB)**](https://raw.githubusercontent.com/41147b019/tdee-calculator/main/docs/20261102-tdee-calculator-demo.mp4)，可在本機使用 QuickTime、VLC 播放或直接拖入 Keynote/PowerPoint 簡報中。
+> 📺 **影片觀看方式（多種選擇）：**  
+> 1. 🌐 **【最推薦】免下載線上專屬播放器**：點擊 👉 [**在線播放專頁 (video.html)**](https://41147b019.github.io/tdee-calculator/video.html)（支援手機與電腦全螢幕流暢播放）。  
+> 2. 🎬 **在 GitHub 原始檔案頁面**：若在 GitHub 檔案頁面出現「This file is too large to display」提示，只需點擊右上角的 **「View raw」** 按鈕，瀏覽器即可全螢幕直接播放！  
+> 3. ⚡ **超輕量版 MP4 (1.4 MB)**：點擊 👉 [**20261102-tdee-calculator-demo-lite.mp4**](docs/20261102-tdee-calculator-demo-lite.mp4)（專為低頻寬串流壓縮）。  
+> 4. ⬇️ **下載 1080p 原始高畫質檔 (8.8 MB)**：點擊 👉 [**下載 1080p MP4**](https://raw.githubusercontent.com/41147b019/tdee-calculator/main/docs/20261102-tdee-calculator-demo.mp4) 本機離線播放或嵌入簡報。
 
 ---
 
@@ -23,7 +25,9 @@
 
 | 交付項目 | 檔案連結 | 說明 |
 | :--- | :--- | :--- |
-| 🎬 **操作流程示範影片** | [20261102-tdee-calculator-demo.mp4](docs/20261102-tdee-calculator-demo.mp4) | **1080p Full HD MP4 (8.8 MB)**，可在 GitHub 線上直接播放或下載 |
+| 🌐 **在線影片播放專頁** | [video.html](video.html) | 免下載專屬網頁播放器，支援任何裝置流暢播放 |
+| 🎬 **操作示範影片 (原始版)** | [20261102-tdee-calculator-demo.mp4](docs/20261102-tdee-calculator-demo.mp4) | **1080p Full HD MP4 (8.8 MB)**，可在 GitHub 線上直接播放或下載 |
+| ⚡ **操作示範影片 (輕量版)** | [20261102-tdee-calculator-demo-lite.mp4](docs/20261102-tdee-calculator-demo-lite.mp4) | **720p HD MP4 (1.4 MB)**，超低頻寬專用串流版 |
 | 🎞️ **操作動態預覽圖** | [20261102-demo-walkthrough.gif](docs/20261102-demo-walkthrough.gif) | 輕量化 GIF 動態圖 (163 KB)，首頁自動循環播放 |
 | 📄 **專題完整報告書** | [20261030-project-report-bilingual.pdf](docs/20261030-project-report-bilingual.pdf) | A4 中英雙語對照 PDF，含痛點分析、公式研究、AI 協作與附錄截圖 |
 | 🖥️ **專題分享投影片** | [20261030-presentation-slides-bilingual.pdf](docs/20261030-presentation-slides-bilingual.pdf) | 16:9 中英雙語橫向投影片 (共 7 頁)，專為成果分享設計 |
