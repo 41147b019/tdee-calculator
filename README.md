@@ -5,11 +5,26 @@
 
 ---
 
-## 🎬 專案成果展示與交付檔案 (Deliverables)
+## 🎬 操作流程動態展示 (Live Demo)
+
+以下為計算機實際操作流程的動態預覽：
+
+<p align="center">
+  <img src="docs/20261102-demo-walkthrough.gif" alt="BMR & TDEE Calculator Live Demo" width="100%" style="border-radius:10px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);">
+</p>
+
+> 📺 **如何觀看 1080p Full HD 高畫質示範影片？**  
+> 1. **在 GitHub 上直接在線播放**：點擊 👉 [**進入 GitHub 內建影片播放器 (docs/20261102-tdee-calculator-demo.mp4)**](https://github.com/41147b019/tdee-calculator/blob/main/docs/20261102-tdee-calculator-demo.mp4)，進入頁面後直接點擊中央的 ▶️ 播放鍵即可串流觀賞！  
+> 2. **直接下載檔案至電腦播放**：點擊 👉 [**下載 1080p MP4 原始檔 (8.8 MB)**](https://raw.githubusercontent.com/41147b019/tdee-calculator/main/docs/20261102-tdee-calculator-demo.mp4)，可在本機使用 QuickTime、VLC 播放或直接拖入 Keynote/PowerPoint 簡報中。
+
+---
+
+## 📦 專案交付檔案總覽 (Deliverables)
 
 | 交付項目 | 檔案連結 | 說明 |
 | :--- | :--- | :--- |
 | 🎬 **操作流程示範影片** | [20261102-tdee-calculator-demo.mp4](docs/20261102-tdee-calculator-demo.mp4) | **1080p Full HD MP4 (8.8 MB)**，可在 GitHub 線上直接播放或下載 |
+| 🎞️ **操作動態預覽圖** | [20261102-demo-walkthrough.gif](docs/20261102-demo-walkthrough.gif) | 輕量化 GIF 動態圖 (163 KB)，首頁自動循環播放 |
 | 📄 **專題完整報告書** | [20261030-project-report-bilingual.pdf](docs/20261030-project-report-bilingual.pdf) | A4 中英雙語對照 PDF，含痛點分析、公式研究、AI 協作與附錄截圖 |
 | 🖥️ **專題分享投影片** | [20261030-presentation-slides-bilingual.pdf](docs/20261030-presentation-slides-bilingual.pdf) | 16:9 中英雙語橫向投影片 (共 7 頁)，專為成果分享設計 |
 | 📝 **影片分鏡說明文件** | [20261102-demo-video-guide.md](docs/20261102-demo-video-guide.md) | 詳細記錄影片各秒數時間軸、操作重點與規格參數 |
