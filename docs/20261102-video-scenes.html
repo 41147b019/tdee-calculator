@@ -1,0 +1,923 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<title>TDEE Calculator Video Scene Generator</title>
+<style>
+  :root {
+    --ink: #16343b;
+    --muted: #526b70;
+    --sea: #087e8b;
+    --sea-dark: #065b64;
+    --coral: #e76f51;
+    --line: #cbded9;
+    --paper: #fffdf8;
+    --wash: #edf7f3;
+    --bg-grad: linear-gradient(135deg, #0d3b44 0%, #16343b 50%, #087e8b 100%);
+    --tag-gain: #2a9d8f;
+    --tag-maintain: #087e8b;
+    --tag-cut: #e76f51;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background: var(--bg-grad);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", sans-serif;
+    color: var(--ink);
+  }
+  .stage {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 30px 40px 20px;
+  }
+
+  /* Top Video Header */
+  .top-bar {
+    width: 1400px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .brand-badge {
+    background: #e76f51;
+    color: #fff;
+    font-weight: 800;
+    font-size: 15px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(231,111,81,0.4);
+  }
+  .brand-title {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+  .brand-sub {
+    font-size: 15px;
+    color: #cbded9;
+    font-weight: 500;
+    margin-left: 6px;
+  }
+  .repo-tag {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    backdrop-filter: blur(8px);
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #edf7f3;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-weight: 600;
+  }
+
+  /* Browser Window Mockup */
+  .browser-window {
+    width: 1400px;
+    height: 820px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.45);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .browser-chrome {
+    height: 48px;
+    background: #f1f4f5;
+    border-bottom: 1px solid #d8e2e0;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    gap: 16px;
+  }
+  .traffic-dots {
+    display: flex;
+    gap: 8px;
+  }
+  .dot {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+  }
+  .dot-red { background: #ff5f56; border: 1px solid #e0443e; }
+  .dot-yellow { background: #ffbd2e; border: 1px solid #dea123; }
+  .dot-green { background: #27c93f; border: 1px solid #1aab29; }
+  .address-bar {
+    flex: 1;
+    max-width: 700px;
+    margin: 0 auto;
+    height: 32px;
+    background: #fff;
+    border-radius: 7px;
+    border: 1px solid #cbded9;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 10px;
+    font-size: 13px;
+    color: #526b70;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+  }
+  .lock-icon {
+    color: #2a9d8f;
+    font-size: 13px;
+  }
+
+  /* Browser Viewport Content */
+  .viewport {
+    flex: 1;
+    background: var(--paper);
+    overflow-y: hidden;
+    display: flex;
+    justify-content: center;
+    padding: 24px 30px;
+    position: relative;
+  }
+  .calc-container {
+    width: 900px;
+    display: flex;
+    flex-direction: column;
+  }
+  .calc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .calc-header h1 {
+    font-size: 26px;
+    margin: 0;
+    color: var(--ink);
+    font-weight: 800;
+  }
+  .calc-note {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0 0 16px;
+  }
+  .btn-lang {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 8px 18px;
+    border: 2px solid var(--sea);
+    background: #fff;
+    color: var(--sea);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-lang.active-btn {
+    background: var(--sea);
+    color: #fff;
+  }
+
+  /* Calculator Form */
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 14px rgba(22,52,59,0.04);
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 14px;
+  }
+  .form-group {
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .form-group label {
+    display: block;
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .radio-group {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    height: 44px;
+  }
+  .radio-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1.5px solid var(--line);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    background: #fff;
+  }
+  .radio-pill.selected {
+    border-color: var(--sea);
+    background: var(--wash);
+    color: var(--sea-dark);
+  }
+  .radio-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--muted);
+  }
+  .radio-pill.selected .radio-dot {
+    border-color: var(--sea);
+    background: var(--sea);
+  }
+
+  .input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .calc-input {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--ink);
+  }
+  .calc-input.highlighted {
+    border-color: var(--sea);
+    box-shadow: 0 0 0 3px rgba(8,126,139,0.25);
+    background: #fcfefe;
+  }
+  .unit {
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 15px;
+    min-width: 38px;
+  }
+  .actions {
+    display: flex;
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .btn-calc {
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 8px;
+    border: none;
+    background: var(--sea);
+    color: #fff;
+    padding: 12px 28px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(8,126,139,0.3);
+  }
+  .btn-calc.pressed {
+    transform: scale(0.96);
+    background: var(--sea-dark);
+  }
+  .btn-reset {
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 1.5px solid var(--line);
+    background: #fff;
+    color: var(--muted);
+    padding: 12px 22px;
+  }
+
+  /* Result Box */
+  .result-box {
+    border: 2px solid var(--sea);
+    border-radius: 12px;
+    background: var(--wash);
+    padding: 18px 22px;
+    margin-bottom: 12px;
+  }
+  .results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .res-metric {
+    background: #fff;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  }
+  .res-metric-title {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .res-metric-val {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .res-metric-val span {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+  .goals-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    font-size: 14px;
+  }
+  .goals-table th, .goals-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+  }
+  .goals-table th {
+    background: #f4f8f7;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .tag-maintain { background: var(--tag-maintain); }
+  .tag-cut { background: var(--tag-cut); }
+  .tag-gain { background: var(--tag-gain); }
+
+  .safe-alert {
+    background: #fdf0ec;
+    border: 1.5px solid var(--coral);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #b03a2e;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  /* Simulated Cursor */
+  .cursor {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    z-index: 9999;
+    pointer-events: none;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4));
+  }
+  .ripple {
+    position: absolute;
+    border: 3px solid #e76f51;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    animation: pulse 1s infinite;
+  }
+
+  /* Bottom Subtitle Caption Bar */
+  .caption-bar {
+    position: absolute;
+    bottom: 24px;
+    width: 1400px;
+    background: rgba(13, 59, 68, 0.94);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(16px);
+    border-radius: 14px;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #fff;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+  }
+  .caption-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .step-pill {
+    background: #e76f51;
+    color: #fff;
+    font-weight: 800;
+    font-size: 14px;
+    padding: 6px 16px;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(231,111,81,0.4);
+    white-space: nowrap;
+  }
+  .caption-text-zh {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .caption-text-en {
+    font-size: 14px;
+    color: #cbded9;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+  .caption-right {
+    font-size: 14px;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    color: #8be4db;
+    font-weight: 700;
+  }
+
+  /* End Screen Overlay */
+  .end-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(13, 59, 68, 0.96);
+    backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    padding: 40px;
+    z-index: 10000;
+  }
+  .end-card {
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    padding: 46px 60px;
+    text-align: center;
+    max-width: 900px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  }
+  .end-title {
+    font-size: 38px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: #fff;
+  }
+  .end-sub {
+    font-size: 20px;
+    color: #8be4db;
+    margin-bottom: 28px;
+    font-weight: 600;
+  }
+  .feature-list {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 34px;
+  }
+  .feature-item {
+    background: rgba(255,255,255,0.1);
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .end-repo-box {
+    background: #087e8b;
+    padding: 14px 30px;
+    border-radius: 30px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: ui-monospace, Menlo, monospace;
+    box-shadow: 0 8px 24px rgba(8,126,139,0.5);
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="brand">
+      <span class="brand-badge">LIVE DEMO</span>
+      <span class="brand-title">BMR & TDEE 每日熱量計算機</span>
+      <span class="brand-sub">操作流程示範 Walkthrough</span>
+    </div>
+    <div class="repo-tag">github.com/41147b019/tdee-calculator</div>
+  </div>
+
+  <!-- Browser Mockup -->
+  <div class="browser-window">
+    <div class="browser-chrome">
+      <div class="traffic-dots">
+        <div class="dot dot-red"></div>
+        <div class="dot dot-yellow"></div>
+        <div class="dot dot-green"></div>
+      </div>
+      <div class="address-bar">
+        <span class="lock-icon">🔒</span>
+        <span>https://41147b019.github.io/tdee-calculator</span>
+      </div>
+    </div>
+
+    <div class="viewport" id="viewport">
+      <div class="calc-container">
+        <div class="calc-header">
+          <h1 id="ui-title">BMR & TDEE 熱量計算機</h1>
+          <button class="btn-lang" id="ui-lang-btn">English</button>
+        </div>
+        <p class="calc-note" id="ui-subtitle">依據國際 Mifflin-St Jeor 公式精確推算</p>
+
+        <div class="card">
+          <div class="form-row">
+            <div class="form-group">
+              <label id="lbl-gender">生理性別</label>
+              <div class="radio-group">
+                <div class="radio-pill selected" id="pill-male">
+                  <div class="radio-dot"></div>
+                  <span id="txt-male">男 Male</span>
+                </div>
+                <div class="radio-pill" id="pill-female">
+                  <div class="radio-dot"></div>
+                  <span id="txt-female">女 Female</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="inp-age" id="lbl-age">年齡</label>
+              <div class="input-wrapper">
+                <input type="text" class="calc-input" id="inp-age" placeholder="例如 25" value="">
+                <span class="unit" id="unit-age">歲</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="inp-height" id="lbl-height">身高</label>
+              <div class="input-wrapper">
+                <input type="text" class="calc-input" id="inp-height" placeholder="例如 170" value="">
+                <span class="unit" id="unit-height">公分</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="inp-weight" id="lbl-weight">體重</label>
+              <div class="input-wrapper">
+                <input type="text" class="calc-input" id="inp-weight" placeholder="例如 65" value="">
+                <span class="unit" id="unit-weight">公斤</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label id="lbl-activity">日常活動程度</label>
+            <select class="calc-input" id="sel-activity" style="width:100%;">
+              <option value="1.2">久坐少動（幾乎不運動、辦公室工作）— 1.20x</option>
+              <option value="1.375">輕度活動（每週輕度運動 1～3 天）— 1.375x</option>
+              <option value="1.55" selected>中度活動（每週中度運動 3～5 天）— 1.55x</option>
+              <option value="1.725">高度活動（每週高強度運動 6～7 天）— 1.725x</option>
+              <option value="1.9">極高活動（重體力勞動或每日雙練）— 1.90x</option>
+            </select>
+          </div>
+
+          <div class="actions">
+            <button class="btn-calc" id="btn-calc">開始計算 TDEE</button>
+            <button class="btn-reset" id="btn-reset">重設</button>
+          </div>
+        </div>
+
+        <!-- Result Box -->
+        <div class="result-box" id="result-box" style="display:none;">
+          <div class="results-grid">
+            <div class="res-metric">
+              <div class="res-metric-title" id="t-bmr-title">BMR 基礎代謝率</div>
+              <div class="res-metric-val"><span id="val-bmr">1,674</span><span>kcal</span></div>
+            </div>
+            <div class="res-metric">
+              <div class="res-metric-title" id="t-tdee-title">TDEE 每日總能量消耗</div>
+              <div class="res-metric-val"><span id="val-tdee">2,594</span><span>kcal</span></div>
+            </div>
+            <div class="res-metric">
+              <div class="res-metric-title" id="t-bmi-title">BMI 體位指標</div>
+              <div class="res-metric-val"><span id="val-bmi">22.9</span><span style="font-size:12px; color:#2a9d8f;">(正常 Normal)</span></div>
+            </div>
+          </div>
+
+          <h2 style="font-size:16px; margin:10px 0 8px; color:var(--ink);" id="t-goals-title">目標熱量攝取建議</h2>
+          <table class="goals-table">
+            <thead>
+              <tr>
+                <th id="th-goal">目標</th>
+                <th id="th-cal">建議攝取熱量</th>
+                <th id="th-desc">說明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag tag-maintain" id="tag-m">維持體重</span></td>
+                <td><strong id="val-maintain">2,594</strong> kcal</td>
+                <td id="desc-m">熱量平衡，體重保持現況</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-cut" id="tag-cm">溫和減脂</span></td>
+                <td><strong id="val-cut-mild">2,294</strong> kcal</td>
+                <td id="desc-cm">TDEE － 300 kcal，適合平穩健康減脂</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-cut" id="tag-cf">積極減脂</span></td>
+                <td><strong id="val-cut-fast">2,094</strong> kcal</td>
+                <td id="desc-cf">TDEE － 500 kcal，加速減脂進程</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-gain" id="tag-gm">溫和增肌</span></td>
+                <td><strong id="val-gain-mild">2,894</strong> kcal</td>
+                <td id="desc-gm">TDEE ＋ 300 kcal，提供肌肥大能量</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-gain" id="tag-gf">積極增肌</span></td>
+                <td><strong id="val-gain-fast">3,094</strong> kcal</td>
+                <td id="desc-gf">TDEE ＋ 500 kcal，高強度訓練增重</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="safe-alert" id="safe-alert" style="display:none;">
+            <span>⚠️</span>
+            <span id="safe-alert-txt">健康警示防護：積極減脂建議熱量請勿低於 BMR 基礎代謝率安全底線！</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Simulated Cursor & Ripple -->
+  <svg class="cursor" id="cursor" viewBox="0 0 24 24" style="left: 960px; top: 540px; display: none;">
+    <path fill="#ffffff" stroke="#16343b" stroke-width="1.5" d="M4 2l16 11-7 1.5 4 7-3 1.5-4-7-5 4V2z"/>
+  </svg>
+  <div class="ripple" id="ripple" style="left: 960px; top: 540px; width: 40px; height: 40px; margin-left: -20px; margin-top: -20px; display: none;"></div>
+
+  <!-- Bottom Caption Bar -->
+  <div class="caption-bar">
+    <div class="caption-left">
+      <div class="step-pill" id="step-pill">STEP 1</div>
+      <div>
+        <div class="caption-text-zh" id="cap-zh">歡迎使用 BMR & TDEE 智慧熱量計算機</div>
+        <div class="caption-text-en" id="cap-en">Welcome to BMR & TDEE Calorie Calculator Walkthrough</div>
+      </div>
+    </div>
+    <div class="caption-right" id="cap-time">00:00 / 00:36</div>
+  </div>
+
+  <!-- End Screen Overlay -->
+  <div class="end-overlay" id="end-overlay" style="display:none;">
+    <div class="end-card">
+      <div class="end-title">🎉 操作示範完成！</div>
+      <div class="end-sub">BMR & TDEE 智慧熱量計算機 · 開源專案成果</div>
+      <div class="feature-list">
+        <div class="feature-item">⚡ Mifflin-St Jeor 國際標準公式</div>
+        <div class="feature-item">🌐 零依賴單一 HTML 離線即開即用</div>
+        <div class="feature-item">🛡️ 內建衛福部安全警示機制</div>
+        <div class="feature-item">🔤 即時無縫中英雙語切換</div>
+      </div>
+      <div class="end-repo-box">
+        <span>🔗 GitHub Repo:</span>
+        <span>https://github.com/41147b019/tdee-calculator</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Scene controller based on URL parameter ?scene=X
+const params = new URLSearchParams(window.location.search);
+const scene = parseInt(params.get('scene') || '0', 10);
+
+function setCursor(x, y, showRipple = false) {
+  const cur = document.getElementById('cursor');
+  const rip = document.getElementById('ripple');
+  cur.style.display = 'block';
+  cur.style.left = x + 'px';
+  cur.style.top = y + 'px';
+  if (showRipple) {
+    rip.style.display = 'block';
+    rip.style.left = x + 'px';
+    rip.style.top = y + 'px';
+  } else {
+    rip.style.display = 'none';
+  }
+}
+
+function applyScene(s) {
+  const pMale = document.getElementById('pill-male');
+  const pFemale = document.getElementById('pill-female');
+  const inAge = document.getElementById('inp-age');
+  const inHeight = document.getElementById('inp-height');
+  const inWeight = document.getElementById('inp-weight');
+  const selAct = document.getElementById('sel-activity');
+  const btnCalc = document.getElementById('btn-calc');
+  const resBox = document.getElementById('result-box');
+  const btnLang = document.getElementById('ui-lang-btn');
+  const pill = document.getElementById('step-pill');
+  const capZh = document.getElementById('cap-zh');
+  const capEn = document.getElementById('cap-en');
+  const capTime = document.getElementById('cap-time');
+  const endOverlay = document.getElementById('end-overlay');
+  const safeAlert = document.getElementById('safe-alert');
+
+  switch(s) {
+    case 0:
+      // Initial Welcome State
+      pill.textContent = "INTRO";
+      capZh.textContent = "歡迎使用 BMR & TDEE 智慧熱量計算機：依科學公式打造的個人化熱量管理工具";
+      capEn.textContent = "Welcome to BMR & TDEE Calculator: A scientific calorie & metabolism planning tool";
+      capTime.textContent = "00:00 / 00:36";
+      setCursor(1450, 480);
+      break;
+
+    case 1:
+      // Step 1: Gender & Age
+      pill.textContent = "STEP 1";
+      inAge.value = "25";
+      inAge.classList.add('highlighted');
+      capZh.textContent = "第一步：確認生理性別（男），並輸入年齡（25 歲）";
+      capEn.textContent = "Step 1: Confirm biological sex (Male) and enter age (25 years)";
+      capTime.textContent = "00:04 / 00:36";
+      setCursor(1250, 260); // over age input
+      break;
+
+    case 2:
+      // Step 2: Height
+      pill.textContent = "STEP 2";
+      inAge.value = "25";
+      inHeight.value = "175";
+      inHeight.classList.add('highlighted');
+      capZh.textContent = "第二步：輸入身高數值（175 公分），系統將據此推算體表面積";
+      capEn.textContent = "Step 2: Enter height (175 cm) for body surface area estimation";
+      capTime.textContent = "00:08 / 00:36";
+      setCursor(770, 335); // over height input
+      break;
+
+    case 3:
+      // Step 3: Weight
+      pill.textContent = "STEP 3";
+      inAge.value = "25";
+      inHeight.value = "175";
+      inWeight.value = "70";
+      inWeight.classList.add('highlighted');
+      capZh.textContent = "第三步：輸入目前體重（70 公斤）";
+      capEn.textContent = "Step 3: Enter current body weight (70 kg)";
+      capTime.textContent = "00:12 / 00:36";
+      setCursor(1250, 335); // over weight input
+      break;
+
+    case 4:
+      // Step 4: Activity Level
+      pill.textContent = "STEP 4";
+      inAge.value = "25";
+      inHeight.value = "175";
+      inWeight.value = "70";
+      selAct.classList.add('highlighted');
+      capZh.textContent = "第四步：選擇日常活動程度 — 中度活動（每週運動 3～5 天，PAL 係數 1.55x）";
+      capEn.textContent = "Step 4: Select daily activity level — Moderate Exercise (3-5 days/week, 1.55x)";
+      capTime.textContent = "00:16 / 00:36";
+      setCursor(1000, 410); // over activity dropdown
+      break;
+
+    case 5:
+      // Step 5: Click Calculate & Show Result
+      pill.textContent = "STEP 5";
+      inAge.value = "25";
+      inHeight.value = "175";
+      inWeight.value = "70";
+      btnCalc.classList.add('pressed');
+      resBox.style.display = 'block';
+      capZh.textContent = "第五步：點擊「開始計算」，以 Mifflin-St Jeor 公式精確產出 BMR 與 TDEE！";
+      capEn.textContent = "Step 5: Click Calculate to compute BMR & TDEE via Mifflin-St Jeor formula!";
+      capTime.textContent = "00:20 / 00:36";
+      setCursor(635, 480, true); // click ripple on calculate button
+      break;
+
+    case 6:
+      // Step 6: View 5 Goals
+      pill.textContent = "STEP 6";
+      inAge.value = "25";
+      inHeight.value = "175";
+      inWeight.value = "70";
+      resBox.style.display = 'block';
+      capZh.textContent = "第六步：檢視個人化 5 大目標熱量（維持 2,594 kcal、減脂 2,294/2,094、增肌 2,894/3,094）";
+      capEn.textContent = "Step 6: Review 5 customized target intakes (Maintain, Cut, and Bulk options)";
+      capTime.textContent = "00:24 / 00:36";
+      setCursor(850, 680); // hovering over table goals
+      break;
+
+    case 7:
+      // Step 7: Language Switch to English
+      pill.textContent = "STEP 7";
+      inAge.value = "25";
+      inHeight.value = "175";
+      inWeight.value = "70";
+      resBox.style.display = 'block';
+      btnLang.classList.add('active-btn');
+      btnLang.textContent = "中文";
+
+      // Translate DOM into English
+      document.getElementById('ui-title').textContent = "BMR & TDEE Calorie Calculator";
+      document.getElementById('ui-subtitle').textContent = "Accurate estimation based on international Mifflin-St Jeor formula";
+      document.getElementById('lbl-gender').textContent = "Biological Sex";
+      document.getElementById('lbl-age').textContent = "Age";
+      document.getElementById('unit-age').textContent = "yrs";
+      document.getElementById('lbl-height').textContent = "Height";
+      document.getElementById('unit-height').textContent = "cm";
+      document.getElementById('lbl-weight').textContent = "Weight";
+      document.getElementById('unit-weight').textContent = "kg";
+      document.getElementById('lbl-activity').textContent = "Activity Level";
+      btnCalc.textContent = "Calculate TDEE";
+      document.getElementById('btn-reset').textContent = "Reset";
+      document.getElementById('t-bmr-title').textContent = "BMR (Basal Metabolic Rate)";
+      document.getElementById('t-tdee-title').textContent = "TDEE (Daily Total Energy)";
+      document.getElementById('t-bmi-title').textContent = "BMI Index";
+      document.getElementById('t-goals-title').textContent = "Target Calorie Recommendations";
+      document.getElementById('th-goal').textContent = "Goal";
+      document.getElementById('th-cal').textContent = "Recommended Intake";
+      document.getElementById('th-desc').textContent = "Description";
+      document.getElementById('tag-m').textContent = "Maintain";
+      document.getElementById('desc-m').textContent = "Energy balance, weight remains stable";
+      document.getElementById('tag-cm').textContent = "Mild Cut";
+      document.getElementById('desc-cm').textContent = "TDEE - 300 kcal, sustainable healthy fat loss";
+      document.getElementById('tag-cf').textContent = "Active Cut";
+      document.getElementById('desc-cf').textContent = "TDEE - 500 kcal, accelerated fat loss";
+      document.getElementById('tag-gm').textContent = "Mild Bulk";
+      document.getElementById('desc-gm').textContent = "TDEE + 300 kcal, fuel hypertrophy with minimal fat";
+      document.getElementById('tag-gf').textContent = "Active Bulk";
+      document.getElementById('desc-gf').textContent = "TDEE + 500 kcal, intense training mass gain";
+
+      capZh.textContent = "第七步：點擊右上角 English 即時切換雙語介面，所有計算數值完美保存！";
+      capEn.textContent = "Step 7: Instant one-click English switch while preserving all active numbers!";
+      capTime.textContent = "00:28 / 00:36";
+      setCursor(1360, 140, true); // ripple on language button
+      break;
+
+    case 8:
+      // Step 8: Safety Alert Demonstration
+      pill.textContent = "STEP 8";
+      pMale.classList.remove('selected');
+      pFemale.classList.add('selected');
+      inAge.value = "22";
+      inHeight.value = "158";
+      inWeight.value = "46";
+      selAct.value = "1.2";
+      resBox.style.display = 'block';
+      document.getElementById('val-bmr').textContent = "1,225";
+      document.getElementById('val-tdee').textContent = "1,470";
+      document.getElementById('val-bmi').textContent = "18.4";
+      document.getElementById('val-maintain').textContent = "1,470";
+      document.getElementById('val-cut-mild').textContent = "1,225";
+      document.getElementById('val-cut-fast').textContent = "1,100 (⚠️)";
+      safeAlert.style.display = 'flex';
+      capZh.textContent = "第八步：安全防護機制 — 積極減脂（1,100 kcal）低於 BMR 時，主動觸發健康警示！";
+      capEn.textContent = "Step 8: Safety Guardrail — Automatically alerts user if intake dips below BMR floor!";
+      capTime.textContent = "00:32 / 00:36";
+      setCursor(1000, 740); // over safe alert
+      break;
+
+    case 9:
+      // Step 9: Final Outro Card
+      pill.textContent = "FINISH";
+      capZh.textContent = "示範完成！感謝觀看 — 歡迎至 GitHub 下載使用或整合！";
+      capEn.textContent = "Walkthrough Completed! Visit our GitHub repository to download or fork!";
+      capTime.textContent = "00:36 / 00:36";
+      endOverlay.style.display = 'flex';
+      break;
+  }
+}
+
+applyScene(scene);
+</script>
+</body>
+</html>
