@@ -204,7 +204,10 @@
 <main>
   <header>
     <h1 id="t-title">BMR & TDEE 熱量計算機</h1>
-    <button type="button" id="lang-btn">English</button>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <a href="video.html" id="t-video-btn" style="text-decoration:none; padding:7px 12px; font-size:0.85rem; font-weight:600; border-radius:8px; background:var(--wash); color:var(--sea); border:1px solid var(--sea);">🎬 操作示範</a>
+      <button type="button" id="lang-btn">English</button>
+    </div>
   </header>
   <p class="note" id="t-subtitle">依據國際 Mifflin-St Jeor 公式精確推算</p>
 
@@ -329,6 +332,7 @@
       docTitle: "BMR & TDEE 熱量計算機",
       title: "BMR & TDEE 熱量計算機",
       langBtn: "English",
+      videoBtn: "🎬 操作示範",
       subtitle: "依據國際 Mifflin-St Jeor 公式精確推算",
       lblGender: "生理性別",
       genMale: "男 Male",
@@ -378,6 +382,7 @@
       docTitle: "BMR & TDEE Calorie Calculator",
       title: "BMR & TDEE Calorie Calculator",
       langBtn: "中文",
+      videoBtn: "🎬 Demo Video",
       subtitle: "Accurate estimation using the Mifflin-St Jeor formula",
       lblGender: "Biological Sex",
       genMale: "Male 男",
@@ -433,6 +438,7 @@
     document.title = t.docTitle;
     $("t-title").textContent = t.title;
     $("lang-btn").textContent = t.langBtn;
+    if ($("t-video-btn")) $("t-video-btn").textContent = t.videoBtn;
     $("t-subtitle").textContent = t.subtitle;
     $("t-lbl-gender").textContent = t.lblGender;
     $("t-gen-male").textContent = t.genMale;
